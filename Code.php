@@ -1,40 +1,60 @@
 <?php
-function MaxWord($a, $words)  //Вычисляет количество вхождений каждого слова в тексте
-{
-    $word1 = explode(" ", $a);
-    $word2 = explode(" ", $a);
-    $check = 0;
 
-    for ($i = 0; $i < $words; $i++)
+function MaxWordFile($a)  //Вычисляет количество вхождений каждого слова в тексте
+{
+
+    $replace = str_replace([".", ",", "?", "!"],"",$a);
+    $replace1 = str_replace([ "\r\n","\r","\n","  "], ' ', $replace);
+
+    $replace2 = explode(' ', $replace1);
+    $check1 = array_count_values($replace2);
+    print_r($check1);
+
+    $fp = fopen('ResultFile.csv', 'w');
+    foreach ($check1 as $word => $count)
     {
-        for ($j = 0; $j < $words; $j++)
-        {
-            if ($word1[$i] === $word2[$j])
-            {
-                $check += 1;
-                $word2[$j] = null;
-            }
-        }
-        if ($check !=0 ) {
-            echo $word1[$i], " : ", $check, "  ; " . PHP_EOL;
-        }
-        $check = 0;
+        fputcsv($fp, [$word, $count], ',');
     }
+    fclose($fp);
 }
 
-$a = "Плачет метель, как цыганская скрипка. 
-Милая девушка, злая улыбка, 
-Я ль не робею от синего взгляда? 
-Много мне нужно и много не надо. 
-Так мы далеки и так не схожи 
-Ты молодая, а я все прожил. 
-Юношам счастье, а мне лишь память 
-Снежною ночью в лихую замять. 
-Я не заласкан буря мне скрипка. 
-Сердце метелит твоя улыбка.";   //73
+function MaxWordTextArea($a)  //Вычисляет количество вхождений каждого слова в тексте
+{
 
-$words = count(explode(' ', $a));
+    $replace = str_replace([".", ",", "?", "!"],"",$a);
+    $replace1 = str_replace([ "\r\n","\r","\n","  "], ' ', $replace);
+
+    $replace2 = explode(' ', $replace1);
+    $check1 = array_count_values($replace2);
+    print_r($check1);
+
+    $fp = fopen('ResultTextArea.csv', 'w');
+    foreach ($check1 as $word => $count)
+    {
+        fputcsv($fp, [$word, $count], ',');
+    }
+    fclose($fp);
+}
+
+$file = file_get_contents($_FILES['file']['name'],'$file_tmp');
+
+$textarea = $_POST['mystr'];
+
+$words = count(explode(' ', $file));
+
 echo "Всего слов : ", $words . PHP_EOL;
-MaxWord($a, $words);
+if (!empty($file) && empty($textarea))
+{
+    MaxWordFile($file);
+}elseif (empty($file) && !empty($textarea))
+{
+    MaxWordTextArea($textarea);
+}elseif (!empty($file) && !empty($textarea)){
+    MaxWordFile($file);
+    MaxWordTextArea($textarea);
+}else{
+    echo "ERROR" . PHP_EOL;
+}
+
 
 ?>
