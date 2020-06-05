@@ -46,15 +46,17 @@ echo "Всего слов : ", $words . PHP_EOL;
 if (!empty($file) && empty($textarea))
 {
     MaxWordFile($file);
-}elseif (empty($file) && !empty($textarea))
+}
+elseif (empty($file) && !empty($textarea))
 {
     MaxWordTextArea($textarea);
-}elseif (!empty($file) && !empty($textarea)){
+}
+elseif (!empty($file) && !empty($textarea))
+{
     MaxWordFile($file);
     MaxWordTextArea($textarea);
-}else{
-    echo "ERROR" . PHP_EOL;
 }
+
 
 
 ?>
